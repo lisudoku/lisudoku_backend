@@ -1,12 +1,12 @@
 class CreatePuzzles < ActiveRecord::Migration[7.0]
   def change
     create_table :puzzles do |t|
-      t.string :public_id, index: true
+      t.string :public_id, index: { unique: true }
       t.string :variant, null: false, index: true
       t.string :difficulty, null: false
-      t.json :data
+      t.json :constraints, null: false
+      t.json :solution, null: false
       t.json :tags
-      t.json :solution
 
       t.index %i[variant difficulty]
 

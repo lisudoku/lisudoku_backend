@@ -18,12 +18,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_222522) do
     t.string "public_id"
     t.string "variant", null: false
     t.string "difficulty", null: false
-    t.json "data"
+    t.json "constraints", null: false
+    t.json "solution", null: false
     t.json "tags"
-    t.json "solution"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["public_id"], name: "index_puzzles_on_public_id"
+    t.index ["public_id"], name: "index_puzzles_on_public_id", unique: true
     t.index ["variant", "difficulty"], name: "index_puzzles_on_variant_and_difficulty"
     t.index ["variant"], name: "index_puzzles_on_variant"
   end
