@@ -2,7 +2,9 @@ class Api::PuzzlesController < ApplicationController
   before_action :load_puzzle, only: %i[show check]
 
   def random
-    puzzle = Puzzle.where(puzzle_filters).offset(rand(Puzzle.count)).first
+    puzzles_query = Puzzle.where(puzzle_filters)
+    random_offset = rand(puzzles_query.count)
+    puzzle = puzzles_query.offset(random_offset).first
 
     render json: PuzzleSerializer.new(puzzle).as_json
   end
