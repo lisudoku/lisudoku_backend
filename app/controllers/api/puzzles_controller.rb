@@ -16,9 +16,7 @@ class Api::PuzzlesController < ApplicationController
   def check
     params.require(:grid)
     render json: {
-      result: {
-        correct: @puzzle.solution == params[:grid]
-      }
+      correct: @puzzle.solution == params[:grid],
     }
   end
 
