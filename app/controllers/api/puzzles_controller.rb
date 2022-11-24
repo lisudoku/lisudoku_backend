@@ -6,6 +6,11 @@ class Api::PuzzlesController < ApplicationController
     random_offset = rand(puzzles_query.count)
     puzzle = puzzles_query.offset(random_offset).first
 
+    if puzzle.blank?
+      render json: {}.as_json, status: :not_found
+      return
+    end
+
     render json: PuzzleSerializer.new(puzzle).as_json
   end
 
