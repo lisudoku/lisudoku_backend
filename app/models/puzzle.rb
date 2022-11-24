@@ -9,7 +9,7 @@ class Puzzle < ApplicationRecord
   validate :check_constraints_keys
 
   enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal mixed].index_by(&:itself)
-  enum difficulty: %w[easy_4x4 easy_6x6 easy_9x9 medium_9x9 hard_9x9].index_by(&:itself)
+  enum difficulty: %w[easy4x4 easy6x6 easy9x9 medium9x9 hard9x9].index_by(&:itself)
 
   private
 

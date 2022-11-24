@@ -3,7 +3,7 @@
 
 Puzzle.create!(
   variant: Puzzle.variants[:classic],
-  difficulty: Puzzle.difficulties[:easy_4x4],
+  difficulty: Puzzle.difficulties[:easy4x4],
   constraints: {
     'grid_size': 4,
     'fixed_numbers': [
@@ -23,7 +23,39 @@ Puzzle.create!(
 
 Puzzle.create!(
   variant: Puzzle.variants[:classic],
-  difficulty: Puzzle.difficulties[:easy_6x6],
+  difficulty: Puzzle.difficulties[:easy4x4],
+  constraints: {
+    'grid_size': 4,
+    'fixed_numbers': [
+      { 'position': { 'row': 0, 'col': 0 }, 'value': 2 },
+      { 'position': { 'row': 0, 'col': 1 }, 'value': 1 },
+      { 'position': { 'row': 0, 'col': 2 }, 'value': 4 },
+      { 'position': { 'row': 0, 'col': 3 }, 'value': 3 },
+      { 'position': { 'row': 1, 'col': 0 }, 'value': 3 },
+      { 'position': { 'row': 1, 'col': 1 }, 'value': 4 },
+      { 'position': { 'row': 1, 'col': 2 }, 'value': 1 },
+      { 'position': { 'row': 1, 'col': 3 }, 'value': 2 },
+      { 'position': { 'row': 2, 'col': 0 }, 'value': 1 },
+      { 'position': { 'row': 2, 'col': 1 }, 'value': 2 },
+      { 'position': { 'row': 2, 'col': 2 }, 'value': 3 },
+      { 'position': { 'row': 2, 'col': 3 }, 'value': 4 },
+      { 'position': { 'row': 3, 'col': 0 }, 'value': 4 },
+      { 'position': { 'row': 3, 'col': 1 }, 'value': 3 },
+      { 'position': { 'row': 3, 'col': 2 }, 'value': 2 },
+    ],
+  },
+  solution: [
+    [ 2, 1, 4, 3 ],
+    [ 3, 4, 1, 2 ],
+    [ 1, 2, 3, 4 ],
+    [ 4, 3, 2, 1 ]
+  ],
+)
+
+
+Puzzle.create!(
+  variant: Puzzle.variants[:classic],
+  difficulty: Puzzle.difficulties[:easy6x6],
   constraints: {
     'grid_size': 6,
     'fixed_numbers': [
@@ -55,7 +87,7 @@ Puzzle.create!(
 
 Puzzle.create!(
   variant: Puzzle.variants[:classic],
-  difficulty: Puzzle.difficulties[:easy_9x9],
+  difficulty: Puzzle.difficulties[:easy9x9],
   constraints: {
     'grid_size': 9,
     'fixed_numbers': [
@@ -108,10 +140,110 @@ Puzzle.create!(
   ],
 )
 
+Puzzle.create!(
+  variant: Puzzle.variants[:classic],
+  difficulty: Puzzle.difficulties[:medium9x9],
+  constraints: {
+    'grid_size': 9,
+    'fixed_numbers': [
+      { 'position': { 'row': 0, 'col': 0 }, 'value': 3 },
+      { 'position': { 'row': 0, 'col': 7 }, 'value': 2 },
+      { 'position': { 'row': 1, 'col': 0 }, 'value': 7 },
+      { 'position': { 'row': 1, 'col': 6 }, 'value': 8 },
+      { 'position': { 'row': 1, 'col': 8 }, 'value': 4 },
+      { 'position': { 'row': 2, 'col': 1 }, 'value': 5 },
+      { 'position': { 'row': 2, 'col': 3 }, 'value': 8 },
+      { 'position': { 'row': 2, 'col': 4 }, 'value': 2 },
+      { 'position': { 'row': 2, 'col': 8 }, 'value': 3 },
+      { 'position': { 'row': 3, 'col': 0 }, 'value': 5 },
+      { 'position': { 'row': 3, 'col': 1 }, 'value': 1 },
+      { 'position': { 'row': 3, 'col': 3 }, 'value': 4 },
+      { 'position': { 'row': 3, 'col': 5 }, 'value': 6 },
+      { 'position': { 'row': 3, 'col': 7 }, 'value': 8 },
+      { 'position': { 'row': 3, 'col': 8 }, 'value': 2 },
+      { 'position': { 'row': 4, 'col': 3 }, 'value': 2 },
+      { 'position': { 'row': 4, 'col': 4 }, 'value': 1 },
+      { 'position': { 'row': 5, 'col': 2 }, 'value': 4 },
+      { 'position': { 'row': 5, 'col': 7 }, 'value': 1 },
+      { 'position': { 'row': 6, 'col': 4 }, 'value': 6 },
+      { 'position': { 'row': 7, 'col': 1 }, 'value': 9 },
+      { 'position': { 'row': 7, 'col': 2 }, 'value': 8 },
+      { 'position': { 'row': 7, 'col': 3 }, 'value': 3 },
+      { 'position': { 'row': 7, 'col': 4 }, 'value': 7 },
+      { 'position': { 'row': 7, 'col': 6 }, 'value': 6 },
+      { 'position': { 'row': 7, 'col': 7 }, 'value': 5 },
+      { 'position': { 'row': 8, 'col': 0 }, 'value': 6 },
+      { 'position': { 'row': 8, 'col': 1 }, 'value': 7 },
+      { 'position': { 'row': 8, 'col': 3 }, 'value': 1 },
+      { 'position': { 'row': 8, 'col': 6 }, 'value': 2 },
+    ],
+  },
+  solution: [
+    [ 3, 8, 1, 6, 4, 9, 5, 2, 7 ],
+    [ 7, 6, 2, 5, 3, 1, 8, 9, 4 ],
+    [ 4, 5, 9, 8, 2, 7, 1, 6, 3 ],
+    [ 5, 1, 7, 4, 9, 6, 3, 8, 2 ],
+    [ 9, 3, 6, 2, 1, 8, 4, 7, 5 ],
+    [ 8, 2, 4, 7, 5, 3, 9, 1, 6 ],
+    [ 1, 4, 5, 9, 6, 2, 7, 3, 8 ],
+    [ 2, 9, 8, 3, 7, 4, 6, 5, 1 ],
+    [ 6, 7, 3, 1, 8, 5, 2, 4, 9 ],
+  ],
+)
+
+Puzzle.create!(
+  variant: Puzzle.variants[:classic],
+  difficulty: Puzzle.difficulties[:hard9x9],
+  constraints: {
+    'grid_size': 9,
+    'fixed_numbers': [
+      { 'position': { 'row': 0, 'col': 0 }, 'value': 5 },
+      { 'position': { 'row': 0, 'col': 2 }, 'value': 8 },
+      { 'position': { 'row': 0, 'col': 3 }, 'value': 7 },
+      { 'position': { 'row': 0, 'col': 4 }, 'value': 4 },
+      { 'position': { 'row': 0, 'col': 8 }, 'value': 3 },
+      { 'position': { 'row': 1, 'col': 2 }, 'value': 2 },
+      { 'position': { 'row': 1, 'col': 4 }, 'value': 9 },
+      { 'position': { 'row': 1, 'col': 5 }, 'value': 1 },
+      { 'position': { 'row': 2, 'col': 1 }, 'value': 9 },
+      { 'position': { 'row': 2, 'col': 4 }, 'value': 6 },
+      { 'position': { 'row': 2, 'col': 5 }, 'value': 8 },
+      { 'position': { 'row': 3, 'col': 5 }, 'value': 4 },
+      { 'position': { 'row': 3, 'col': 6 }, 'value': 7 },
+      { 'position': { 'row': 4, 'col': 3 }, 'value': 6 },
+      { 'position': { 'row': 5, 'col': 0 }, 'value': 9 },
+      { 'position': { 'row': 5, 'col': 1 }, 'value': 2 },
+      { 'position': { 'row': 5, 'col': 2 }, 'value': 6 },
+      { 'position': { 'row': 5, 'col': 4 }, 'value': 8 },
+      { 'position': { 'row': 5, 'col': 7 }, 'value': 4 },
+      { 'position': { 'row': 6, 'col': 0 }, 'value': 2 },
+      { 'position': { 'row': 6, 'col': 7 }, 'value': 3 },
+      { 'position': { 'row': 7, 'col': 0 }, 'value': 7 },
+      { 'position': { 'row': 7, 'col': 2 }, 'value': 4 },
+      { 'position': { 'row': 7, 'col': 6 }, 'value': 1 },
+      { 'position': { 'row': 7, 'col': 8 }, 'value': 2 },
+      { 'position': { 'row': 8, 'col': 1 }, 'value': 8 },
+      { 'position': { 'row': 8, 'col': 2 }, 'value': 5 },
+      { 'position': { 'row': 8, 'col': 8 }, 'value': 9 },
+    ],
+  },
+  solution: [
+    [ 5, 6, 8, 7, 4, 2, 9, 1, 3 ],
+    [ 3, 4, 2, 5, 9, 1, 6, 8, 7 ],
+    [ 1, 9, 7, 3, 6, 8, 2, 5, 4 ],
+    [ 8, 5, 1, 9, 3, 4, 7, 2, 6 ],
+    [ 4, 7, 3, 6, 2, 5, 8, 9, 1 ],
+    [ 9, 2, 6, 1, 8, 7, 3, 4, 5 ],
+    [ 2, 1, 9, 4, 7, 6, 5, 3, 8 ],
+    [ 7, 3, 4, 8, 5, 9, 1, 6, 2 ],
+    [ 6, 8, 5, 2, 1, 3, 4, 7, 9 ],
+  ],
+)
+
 # WSC booklet 6x6 thermo https://uploads-ssl.webflow.com/62793457876c001d28edf162/6348945a45b06acb414391b7_WSC_2022_IB_v2.1.pdf
 Puzzle.create!(
   variant: Puzzle.variants[:thermo],
-  difficulty: Puzzle.difficulties[:easy_6x6],
+  difficulty: Puzzle.difficulties[:easy6x6],
   constraints: {
     'grid_size': 6,
     'fixed_numbers': [
@@ -167,7 +299,7 @@ Puzzle.create!(
 # UK Sudoku Championship 2022 booklet - 9x9 thermo https://ukpuzzles.org/file_download.php?fileid=247&md5=c200e06d8822177932d906103919ceba
 Puzzle.create!(
   variant: Puzzle.variants[:thermo],
-  difficulty: Puzzle.difficulties[:easy_9x9],
+  difficulty: Puzzle.difficulties[:easy9x9],
   constraints: {
     'grid_size': 9,
     'fixed_numbers': [
@@ -199,8 +331,8 @@ Puzzle.create!(
       ],
       [
         { 'row': 2, 'col': 5 },
-        { 'row': 3, 'col': 4 },
-        { 'row': 4, 'col': 3 },
+        { 'row': 2, 'col': 4 },
+        { 'row': 2, 'col': 3 },
       ],
       [
         { 'row': 3, 'col': 2 },
