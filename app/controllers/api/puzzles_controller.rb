@@ -7,7 +7,7 @@ class Api::PuzzlesController < ApplicationController
     puzzle = puzzles_query.offset(random_offset).first
 
     if puzzle.blank?
-      render json: {}.as_json, status: :not_found
+      render json: {}, status: :not_found
       return
     end
 
