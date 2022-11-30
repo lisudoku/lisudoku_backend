@@ -6,7 +6,8 @@
 # - tags: TBD
 class Puzzle < ApplicationRecord
   before_create :set_public_id, :ensure_default_regions
-  validate :check_constraints_keys
+  validate :check_constraints
+  validate :check_solution
 
   enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal mixed].index_by(&:itself)
   enum difficulty: %w[easy4x4 easy6x6 easy9x9 medium9x9 hard9x9].index_by(&:itself)
@@ -17,8 +18,25 @@ class Puzzle < ApplicationRecord
     self.public_id = SecureRandom.urlsafe_base64(15)
   end
 
-  def check_constraints_keys
-    errors.add(:constraints, 'constraints does not contain grid_size') unless constraints.has_key?('grid_size')
+  def check_constraints
+    %w[grid_size regions fixed_numbers].each do |key|
+      errors.add(:constraints, "constraints does not contain #{key}") unless constraints.has_key?(key)
+    end
+    errors.add(:constraints, 'grid_size must be 4, 6, or 9') unless constraints['grid_size'].in?([ 4, 6, 9 ])
+    # TODO: check that regions has good format and covers the whole grid
+    # TODO: check that fixed_numbers are unique, do not break sudoku (or other) rules
+    # TODO: check that thermos has good format, each thermo has 1 < length <= grid_size
+  end
+
+  def check_solution
+    return if errors.present?
+
+    grid_size = constraints['grid_size']
+    errors.add(:solution, "solution must have size #{grid_size}x#{grid_size}") unless solution.size == grid_size
+    solution.each do |row|
+      errors.add(:solution, "solution must have size #{grid_size}x#{grid_size}") unless row.size == grid_size
+    end
+    # TODO: check that the solution is valid
   end
 
   def compute_region_sizes(grid_size)

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   namespace :api do
-    resources :puzzles, only: %i[show] do
+    resources :puzzles, only: %i[show create] do
       collection do
         get 'random'
       end
