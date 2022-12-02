@@ -39,6 +39,17 @@ class Api::PuzzlesController < ApplicationController
     end
   end
 
+  def index
+    # TODO: only admins should have permission to this action
+    serialized_puzzles = Puzzle.all.map do |puzzle|
+      PuzzleSerializer.new(puzzle).as_json
+    end
+
+    render json: {
+      puzzles: serialized_puzzles,
+    }
+  end
+
   private
 
   def load_puzzle
