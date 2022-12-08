@@ -1,5 +1,5 @@
 class Api::PuzzlesController < ApplicationController
-  before_action :load_puzzle, only: %i[show check]
+  before_action :load_puzzle, only: %i[show check destroy]
 
   def random
     puzzles_query = Puzzle.where(puzzle_filters)
@@ -48,6 +48,14 @@ class Api::PuzzlesController < ApplicationController
     render json: {
       puzzles: serialized_puzzles,
     }
+  end
+
+  def destroy
+    # TODO: only admins should have permission to this action
+
+    @puzzle.destroy!
+
+    render json: PuzzleSerializer.new(@puzzle).as_json
   end
 
   private
