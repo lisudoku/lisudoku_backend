@@ -2,9 +2,16 @@ class Api::PuzzlesController < ApplicationController
   before_action :load_puzzle, only: %i[show check destroy]
 
   def random
-    puzzles_query = Puzzle.where(puzzle_filters)
-    random_offset = rand(puzzles_query.count)
-    puzzle = puzzles_query.offset(random_offset).first
+    # TODO: should definitely cache this (depending on puzzle_filters)
+    all_puzzle_ids = Puzzle.where(puzzle_filters).select(:public_id).pluck(:public_id)
+
+    puzzle_ids = all_puzzle_ids - params[:id_blacklist]
+
+    puzzle = if puzzle_ids.present?
+      random_index = rand(puzzle_ids.size)
+      puzzle_id = puzzle_ids[random_index]
+      Puzzle.find_by(public_id: puzzle_id)
+    end
 
     if puzzle.blank?
       render json: {}, status: :not_found
