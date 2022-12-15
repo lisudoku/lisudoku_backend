@@ -50,7 +50,7 @@ class Api::PuzzlesController < ApplicationController
   def index
     authorize! :read_all, Puzzle
 
-    serialized_puzzles = Puzzle.all.map do |puzzle|
+    serialized_puzzles = Puzzle.order(:id).map do |puzzle|
       PuzzleSerializer.new(puzzle).as_json
     end
 

@@ -5,7 +5,7 @@
 # - solution: the unique solution to the puzzle
 # - tags: TBD
 class Puzzle < ApplicationRecord
-  before_create :set_public_id, :ensure_default_regions
+  before_validation :set_public_id, :ensure_default_regions
   validates :constraints, presence: true
   validate :check_constraints
   validates :solution, presence: true
@@ -22,7 +22,7 @@ class Puzzle < ApplicationRecord
 
   def check_constraints
     %w[grid_size regions fixed_numbers].each do |key|
-      errors.add(:constraints, "constraints does not contain #{key}") unless constraints.has_key?(key)
+      errors.add(:constraints, "does not contain #{key}") unless constraints.has_key?(key)
     end
     errors.add(:constraints, 'grid_size must be 4, 6, or 9') unless constraints['grid_size'].in?([ 4, 6, 9 ])
     # TODO: check that regions has good format and covers the whole grid
