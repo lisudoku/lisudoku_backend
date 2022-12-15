@@ -6,7 +6,9 @@
 # - tags: TBD
 class Puzzle < ApplicationRecord
   before_create :set_public_id, :ensure_default_regions
+  validates :constraints, presence: true
   validate :check_constraints
+  validates :solution, presence: true
   validate :check_solution
 
   enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal mixed].index_by(&:itself)
@@ -15,7 +17,7 @@ class Puzzle < ApplicationRecord
   private
 
   def set_public_id
-    self.public_id = SecureRandom.urlsafe_base64(15)
+    self.public_id ||= SecureRandom.urlsafe_base64(15)
   end
 
   def check_constraints

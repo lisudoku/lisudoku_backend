@@ -1,4 +1,5 @@
 class Api::PuzzlesController < ApplicationController
+  before_action :authenticate_user!, only: %i[index create destroy group_counts]
   before_action :load_puzzle, only: %i[show check destroy]
 
   def random
@@ -33,7 +34,7 @@ class Api::PuzzlesController < ApplicationController
   end
 
   def create
-    # TODO: only admins should have permission to this action
+    authorize! :create, Puzzle
     # TODO: check that there isn't a identical/similar puzzle
 
     puzzle = Puzzle.new(puzzle_params)
@@ -47,7 +48,8 @@ class Api::PuzzlesController < ApplicationController
   end
 
   def index
-    # TODO: only admins should have permission to this action
+    authorize! :read_all, Puzzle
+
     serialized_puzzles = Puzzle.all.map do |puzzle|
       PuzzleSerializer.new(puzzle).as_json
     end
@@ -58,11 +60,36 @@ class Api::PuzzlesController < ApplicationController
   end
 
   def destroy
-    # TODO: only admins should have permission to this action
+    authorize! :manage, @puzzle
 
     @puzzle.destroy!
 
     render json: PuzzleSerializer.new(@puzzle).as_json
+  end
+
+  def group_counts
+    authorize! :read_all, Puzzle
+
+    group_counts = Puzzle.group(:variant, :difficulty).order(:variant, :difficulty).count
+
+    Puzzle.variants.keys.each do |variant|
+      Puzzle.difficulties.keys.each do |difficulty|
+        key = [ variant, difficulty ]
+        group_counts[key] ||= 0
+      end
+    end
+
+    serialized_group_counts = group_counts.map do |key, count|
+      {
+        variant: key[0],
+        difficulty: key[1],
+        count:,
+      }
+    end
+
+    render json: {
+      group_counts: serialized_group_counts,
+    }
   end
 
   private
@@ -73,7 +100,10 @@ class Api::PuzzlesController < ApplicationController
 
   def puzzle_filters
     params.require([:variant, :difficulty])
-    params.permit(:variant, :difficulty)
+    {
+      variant: params[:variant],
+      difficulty: params[:difficulty],
+    }
   end
 
   def puzzle_params
