@@ -83,7 +83,7 @@ class Api::PuzzlesController < ApplicationController
       {
         variant: key[0],
         difficulty: key[1],
-        count:,
+        count: count,
       }
     end
 
