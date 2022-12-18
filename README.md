@@ -1,24 +1,15 @@
-# README
+# lisudoku_backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+https://api.lisudoku.xyz
 
-Things you may want to cover:
+This is lisudoku's Rails backend.
 
-* Ruby version
+## Setup
 
-* System dependencies
+TBD
 
-* Configuration
+## Deployment
 
-* Database creation
+It is deployed to [fly.io](https://fly.io/).
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Command `fly deploy`
