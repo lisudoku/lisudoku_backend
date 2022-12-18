@@ -15,6 +15,7 @@ class Api::PuzzlesController < ApplicationController
     end
 
     if puzzle.blank?
+      Honeybadger.notify("Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved")
       render json: {}, status: :not_found
       return
     end
