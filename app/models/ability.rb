@@ -6,6 +6,8 @@ class Ability
   def initialize(user)
     can :read, Puzzle
 
+    return unless user.present?
+
     return unless user.admin?
 
     can :manage, Puzzle

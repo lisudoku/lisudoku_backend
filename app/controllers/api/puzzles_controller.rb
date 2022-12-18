@@ -3,6 +3,8 @@ class Api::PuzzlesController < ApplicationController
   before_action :load_puzzle, only: %i[show check destroy]
 
   def random
+    authorize! :read, Puzzle
+
     # TODO: should definitely cache this (depending on puzzle_filters)
     all_puzzle_ids = Puzzle.where(puzzle_filters).select(:public_id).pluck(:public_id)
 
@@ -15,7 +17,9 @@ class Api::PuzzlesController < ApplicationController
     end
 
     if puzzle.blank?
-      Honeybadger.notify("Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved")
+      unless current_user&.admin?
+        Honeybadger.notify("Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved")
+      end
       render json: {}, status: :not_found
       return
     end
@@ -24,6 +28,8 @@ class Api::PuzzlesController < ApplicationController
   end
 
   def show
+    authorize! :read, @puzzle
+
     render json: PuzzleSerializer.new(@puzzle).as_json
   end
 
