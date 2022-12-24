@@ -25,5 +25,10 @@ module LisudokuBackend
     config.api_only = true
 
     config.action_dispatch.rescue_responses.merge!('CanCan::AccessDenied' => :forbidden)
+
+    # Enable sessions for sidekiq Web UI
+    config.session_store :cookie_store, key: '_interslice_session'
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store, config.session_options
   end
 end

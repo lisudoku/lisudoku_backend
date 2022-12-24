@@ -49,3 +49,7 @@ gem 'devise-jwt'
 gem 'cancancan'
 
 gem 'honeybadger', '~> 5.0'
+
+# Background jobs
+gem 'sidekiq', '~> 7.0.2'
+gem 'sidekiq-cron', '~> 1.9.1'

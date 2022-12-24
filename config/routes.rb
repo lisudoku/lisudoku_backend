@@ -1,5 +1,9 @@
+require 'sidekiq/web'
+require 'sidekiq/cron/web'
+
 Rails.application.routes.draw do
   root 'application#index'
+  mount Sidekiq::Web => '/sidekiq'
 
   devise_for :users,
     controllers: {

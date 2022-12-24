@@ -1,12 +1,14 @@
 class TvChannel < ApplicationCable::Channel
+  include RedisTv
+
   after_subscribe :send_init_message, unless: :subscription_rejected?
 
-  REDIS_KEY = 'tv_puzzles'
   CHANNEL_NAME = 'tv_channel'
 
   MESSAGE_TYPES = {
     init_puzzles: 'init_puzzles',
     puzzle_update: 'puzzle_update',
+    puzzle_remove: 'puzzle_remove',
   }
 
   attr_accessor :is_player
@@ -26,6 +28,7 @@ class TvChannel < ApplicationCable::Channel
   end
 
   def receive(message)
+    puts message
     unless self.is_player
       return
     end
@@ -77,25 +80,5 @@ class TvChannel < ApplicationCable::Channel
       data: tv_puzzle,
     }
     ActionCable.server.broadcast(CHANNEL_NAME, puzzle_update_message)
-  end
-
-  def redis_puzzle_exists?(id)
-    hash = Kredis.hash REDIS_KEY, typed: :json
-    hash[id].present?
-  end
-
-  def redis_update_puzzle(tv_puzzle)
-    hash = Kredis.hash REDIS_KEY, typed: :json
-    id = tv_puzzle[:id]
-
-    hash.update(id => {
-      **(hash[id] || {}),
-      **tv_puzzle,
-    })
-  end
-
-  def redis_get_puzzles
-    hash = Kredis.hash REDIS_KEY, typed: :json
-    hash.values
   end
 end

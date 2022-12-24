@@ -79,6 +79,7 @@ GEM
     case_transform (0.2)
       activesupport
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     crass (1.0.6)
     date (3.3.2)
     debug (1.7.0)
@@ -105,11 +106,16 @@ GEM
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)
     erubi (1.11.0)
+    et-orbi (1.2.7)
+      tzinfo
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    fugit (1.8.0)
+      et-orbi (~> 1, >= 1.2.7)
+      raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
     honeybadger (5.0.2)
@@ -154,6 +160,7 @@ GEM
     pg (1.4.5)
     puma (5.6.5)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.6.1)
     rack (2.2.4)
     rack-cors (1.1.1)
@@ -188,6 +195,8 @@ GEM
       zeitwerk (~> 2.5)
     rake (13.0.6)
     redis (4.8.0)
+    redis-client (0.11.2)
+      connection_pool
     reline (0.3.2)
       io-console (~> 0.5)
     responders (3.0.1)
@@ -210,6 +219,14 @@ GEM
       rspec-mocks (~> 3.11)
       rspec-support (~> 3.11)
     rspec-support (3.12.0)
+    sidekiq (7.0.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
+    sidekiq-cron (1.9.1)
+      fugit (~> 1.8)
+      sidekiq (>= 4.2.1)
     thor (1.2.1)
     timeout (0.3.1)
     tzinfo (2.0.5)
@@ -246,6 +263,8 @@ DEPENDENCIES
   rails (~> 7.0.4)
   redis (~> 4.0)
   rspec-rails
+  sidekiq (~> 7.0.2)
+  sidekiq-cron (~> 1.9.1)
   tzinfo-data
 
 RUBY VERSION
