@@ -71,6 +71,10 @@ class TvChannel < ApplicationCable::Channel
         created_at: Time.now.iso8601,
         **puzzle.slice(:constraints, :variant, :difficulty),
       })
+
+      if redis_puzzles_size == 0
+        Honeybadger.notify('Someone is playing!')
+      end
     end
 
     redis_update_puzzle(tv_puzzle)

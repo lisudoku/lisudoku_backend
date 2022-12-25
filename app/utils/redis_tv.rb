@@ -27,4 +27,9 @@ module RedisTv
       hash.delete(tv_puzzle_id)
     end
   end
+
+  def redis_puzzles_size
+    hash = Kredis.hash REDIS_KEY, typed: :json
+    hash.keys.size
+  end
 end
