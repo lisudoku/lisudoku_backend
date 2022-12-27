@@ -1,5 +1,6 @@
 module RedisTv
   REDIS_KEY = 'tv_puzzles'
+  REDIS_VIEWERS_KEY = 'viewers'
 
   def redis_puzzle_exists?(id)
     hash = Kredis.hash REDIS_KEY, typed: :json
@@ -28,8 +29,23 @@ module RedisTv
     end
   end
 
-  def redis_puzzles_size
+  def redis_puzzles_count
     hash = Kredis.hash REDIS_KEY, typed: :json
     hash.keys.size
+  end
+
+  def redis_viewer_count
+    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
+    viewers.size
+  end
+
+  def redis_add_viewer(user_id)
+    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
+    viewers.add(user_id)
+  end
+
+  def redis_remove_viewer(user_id)
+    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
+    viewers.remove(user_id)
   end
 end
