@@ -23,7 +23,7 @@ class TvChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    puts 'Unsubscribed'
+    puts "Unsubscribed (user #{user_id})"
     # TODO: if real user, remove puzzles
   end
 
