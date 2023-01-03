@@ -11,7 +11,7 @@ class Puzzle < ApplicationRecord
   validates :solution, presence: true
   validate :check_solution
 
-  enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal mixed].index_by(&:itself)
+  enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal antiknight mixed].index_by(&:itself)
   enum difficulty: %w[easy4x4 easy6x6 easy9x9 medium9x9 hard9x9].index_by(&:itself)
 
   private
