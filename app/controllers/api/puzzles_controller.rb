@@ -116,6 +116,8 @@ class Api::PuzzlesController < ApplicationController
   def puzzle_params
     # permit doesn't work with nested arrays :-/
     params.require(:puzzle).permit!
-    params.require(:puzzle).to_h.slice(:constraints, :variant, :difficulty, :solution)
+    params.require(:puzzle).to_h.slice(
+      :constraints, :variant, :difficulty, :solution, :source_name, :source_url
+    )
   end
 end

@@ -61,6 +61,8 @@ describe 'Puzzles', type: :request do
             [ 1, 2, 3, 4 ],
             [ 4, 3, 2, 1 ]
           ],
+          source_name: 'Some Source',
+          source_url: 'http://www.something.com/puzzles.pdf',
         },
       }
     end
@@ -84,6 +86,8 @@ describe 'Puzzles', type: :request do
       expect(body['variant']).to eq(@puzzle_data[:puzzle][:variant])
       expect(Puzzle.first.variant).to eq(@puzzle_data[:puzzle][:variant])
       expect(Puzzle.first.public_id).to be_present
+      expect(Puzzle.first.source_name).to eq(@puzzle_data[:puzzle][:source_name])
+      expect(Puzzle.first.source_url).to eq(@puzzle_data[:puzzle][:source_url])
     end
   end
 

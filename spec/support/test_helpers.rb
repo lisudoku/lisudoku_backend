@@ -4,11 +4,11 @@ def call_api(method, url, params = nil, user = nil)
 
   case method
   when :get
-    get url, params:, headers:, as: :json
+    get url, params: params, headers: headers, as: :json
   when :post
-    post url, params:, headers:, as: :json
+    post url, params: params, headers: headers, as: :json
   when :delete
-    delete url, params:, headers:, as: :json
+    delete url, params: params, headers: headers, as: :json
   end
 end
 
