@@ -55,6 +55,9 @@ class TvChannel < ApplicationCable::Channel
     unless self.is_player
       tv_puzzles = redis_get_puzzles
       viewer_count = redis_viewer_count
+      if viewer_count == 1
+        Honeybadger.notify('Someone is watching!')
+      end
       init_data = {
         tv_puzzles: tv_puzzles,
         viewer_count: viewer_count,
