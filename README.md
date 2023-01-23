@@ -2,11 +2,15 @@
 
 https://api.lisudoku.xyz
 
-This is lisudoku's Rails backend.
+This is lisudoku's Rails backend. It uses a postgres database.
 
 ## Setup
 
 TBD
+
+## Contribute
+
+Join the [discord server](https://discord.gg/SGV8TQVSeT).
 
 ## Deployment
 
