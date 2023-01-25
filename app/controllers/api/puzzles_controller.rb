@@ -5,8 +5,7 @@ class Api::PuzzlesController < ApplicationController
   def random
     authorize! :read, Puzzle
 
-    # TODO: should definitely cache this (depending on puzzle_filters)
-    all_puzzle_ids = Puzzle.where(puzzle_filters).select(:public_id).pluck(:public_id)
+    all_puzzle_ids = Puzzle.all_ids(puzzle_filters)
 
     puzzle_ids = all_puzzle_ids - params[:id_blacklist]
 
@@ -53,6 +52,7 @@ class Api::PuzzlesController < ApplicationController
 
     puzzle = Puzzle.new(puzzle_params)
     if puzzle.save
+      puzzle.invalidate_puzzle_cache
       render json: PuzzleSerializer.new(puzzle).as_json
     else
       render json: {
@@ -77,6 +77,7 @@ class Api::PuzzlesController < ApplicationController
     authorize! :manage, @puzzle
 
     @puzzle.destroy!
+    @puzzle.invalidate_puzzle_cache
 
     render json: PuzzleSerializer.new(@puzzle).as_json
   end

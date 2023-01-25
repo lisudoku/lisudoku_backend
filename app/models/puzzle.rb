@@ -14,7 +14,25 @@ class Puzzle < ApplicationRecord
   enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal antiknight mixed].index_by(&:itself)
   enum difficulty: %w[easy4x4 easy6x6 easy9x9 medium9x9 hard9x9].index_by(&:itself)
 
+  def self.all_ids(puzzle_filters)
+    Rails.cache.fetch(self.puzzle_ids_cache_key(puzzle_filters), expires_in: 24.hours) do
+      Puzzle.where(puzzle_filters).select(:public_id).pluck(:public_id)
+    end
+  end
+
+  def invalidate_puzzle_cache
+    puzzle_filters = {
+      variant: variant,
+      difficulty: difficulty,
+    }
+    Rails.cache.delete(self.class.puzzle_ids_cache_key(puzzle_filters))
+  end
+
   private
+
+  def self.puzzle_ids_cache_key(puzzle_filters)
+    "puzzle_ids_#{puzzle_filters.values.join}"
+  end
 
   def set_public_id
     self.public_id ||= SecureRandom.urlsafe_base64(15)
