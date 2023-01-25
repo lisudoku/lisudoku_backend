@@ -35,17 +35,32 @@ module RedisTv
   end
 
   def redis_viewer_count
-    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
-    viewers.size
+    viewers = Kredis.hash REDIS_VIEWERS_KEY, typed: :json
+    viewers.keys.size
   end
 
   def redis_add_viewer(user_id)
-    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
-    viewers.add(user_id)
+    viewers = Kredis.hash REDIS_VIEWERS_KEY, typed: :json
+    viewers.update(user_id => {
+      id: user_id,
+      updated_at: DateTime.now.to_s,
+    })
   end
 
   def redis_remove_viewer(user_id)
-    viewers = Kredis.set REDIS_VIEWERS_KEY, typed: :string
-    viewers.remove(user_id)
+    viewers = Kredis.hash REDIS_VIEWERS_KEY, typed: :json
+    viewers.delete(user_id)
+  end
+
+  def redis_get_viewers
+    viewers = Kredis.hash REDIS_VIEWERS_KEY, typed: :json
+    viewers.values
+  end
+
+  def redis_remove_viewers(tv_viewer_ids)
+    viewers = Kredis.hash REDIS_VIEWERS_KEY, typed: :json
+    tv_viewer_ids.each do |tv_viewer_id|
+      viewers.delete(tv_viewer_id)
+    end
   end
 end
