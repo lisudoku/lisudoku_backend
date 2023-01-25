@@ -35,8 +35,15 @@ class Api::PuzzlesController < ApplicationController
 
   def check
     params.require(:grid)
+
+    correct = @puzzle.solution == params[:grid]
+
+    if correct
+      Honeybadger.notify("Someone solved puzzle #{@puzzle.public_id}!")
+    end
+
     render json: {
-      correct: @puzzle.solution == params[:grid],
+      correct: correct,
     }
   end
 
