@@ -11,8 +11,12 @@ class Puzzle < ApplicationRecord
   validates :solution, presence: true
   validate :check_solution
 
-  enum variant: %w[classic killer thermo arrow irregular kropki topbot diagonal antiknight mixed].index_by(&:itself)
-  enum difficulty: %w[easy4x4 easy6x6 easy9x9 medium9x9 hard9x9].index_by(&:itself)
+  enum variant: %w[
+    arrow antiknight classic diagonal regions irregular killer kropki mixed oddeven thermo topbot
+  ].index_by(&:itself)
+  enum difficulty: %w[
+    easy4x4 easy6x6 hard6x6 easy9x9 medium9x9 hard9x9
+  ].index_by(&:itself)
 
   def self.all_ids(puzzle_filters)
     Rails.cache.fetch(self.puzzle_ids_cache_key(puzzle_filters), expires_in: 24.hours) do
