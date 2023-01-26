@@ -118,6 +118,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    hiredis (0.6.3)
     honeybadger (5.0.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -251,10 +252,12 @@ DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   bootsnap
   cancancan
+  connection_pool
   debug
   devise
   devise-jwt
   factory_bot_rails
+  hiredis
   honeybadger (~> 5.0)
   kredis
   pg (~> 1.1)
