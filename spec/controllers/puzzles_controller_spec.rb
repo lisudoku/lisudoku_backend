@@ -4,6 +4,8 @@ describe 'Puzzles', type: :request do
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, admin: true) }
   let(:puzzle) { create(:puzzle) }
+  let(:puzzle_collection) { create(:puzzle_collection) }
+  let(:other_puzzle_collection) { create(:puzzle_collection) }
 
   describe 'show' do
     it 'returns a serialized puzzle if valid id' do
@@ -45,7 +47,7 @@ describe 'Puzzles', type: :request do
   end
 
   describe 'create' do
-    before :all do
+    before :each do
       @puzzle_data = {
         puzzle: {
           variant: Puzzle.variants[:classic],
@@ -61,8 +63,7 @@ describe 'Puzzles', type: :request do
             [ 1, 2, 3, 4 ],
             [ 4, 3, 2, 1 ]
           ],
-          source_name: 'Some Source',
-          source_url: 'http://www.something.com/puzzles.pdf',
+          source_collection_id: puzzle_collection.id,
         },
       }
     end
@@ -84,28 +85,85 @@ describe 'Puzzles', type: :request do
       expect(Puzzle.count).to eq 1
       body = JSON.parse(response.body)
       expect(body['variant']).to eq(@puzzle_data[:puzzle][:variant])
-      expect(Puzzle.first.variant).to eq(@puzzle_data[:puzzle][:variant])
-      expect(Puzzle.first.public_id).to be_present
-      expect(Puzzle.first.source_name).to eq(@puzzle_data[:puzzle][:source_name])
-      expect(Puzzle.first.source_url).to eq(@puzzle_data[:puzzle][:source_url])
+      puzzle = Puzzle.first
+      expect(puzzle.variant).to eq(@puzzle_data[:puzzle][:variant])
+      expect(puzzle.public_id).to be_present
+      expect(puzzle.source_collection_id).to eq(@puzzle_data[:puzzle][:source_collection_id])
+      expect(puzzle.puzzle_collections.count).to eq 1
     end
   end
 
   describe 'destroy' do
     it 'returns a permission error if normal user', :error_response do
-      delete_api "/api/puzzles/#{puzzle.public_id}", {}, user
+      delete_api "/api/puzzles/#{puzzle.id}", {}, user
 
       expect(response).to have_http_status(403)
     end
 
     it 'deletes the puzzle if admin user' do
       puzzle
+      puzzle_collection.puzzle_collections_puzzles.create!(puzzle: puzzle)
       expect(Puzzle.count).to eq 1
+      expect(puzzle_collection.puzzles.count).to eq 1
+      expect(PuzzleCollectionsPuzzle.count).to eq 1
 
-      delete_api "/api/puzzles/#{puzzle.public_id}", {}, admin_user
+      delete_api "/api/puzzles/#{puzzle.id}", {}, admin_user
 
       expect(response).to have_http_status(200)
       expect(Puzzle.count).to eq 0
+      expect(puzzle_collection.puzzles.count).to eq 0
+      expect(PuzzleCollectionsPuzzle.count).to eq 0
+    end
+  end
+
+  describe 'update' do
+    it 'returns a permission error if normal user', :error_response do
+      data = {
+        difficulty: Puzzle.difficulties[:hard9x9],
+      }
+      patch_api "/api/puzzles/#{puzzle.id}", data, user
+
+      expect(response).to have_http_status(403)
+    end
+
+    it 'updates the puzzle if admin user' do
+      puzzle
+      puzzle.update!(source_collection_id: puzzle_collection.id)
+      expect(Puzzle.count).to eq 1
+      expect(puzzle_collection.puzzles.count).to eq 1
+      expect(other_puzzle_collection.puzzles.count).to eq 0
+      expect(PuzzleCollectionsPuzzle.count).to eq 1
+
+      data = {
+        difficulty: Puzzle.difficulties[:hard9x9],
+        source_collection_id: other_puzzle_collection.id,
+      }
+      patch_api "/api/puzzles/#{puzzle.id}", data, admin_user
+
+      expect(response).to have_http_status(200)
+      expect(Puzzle.count).to eq 1
+      expect(Puzzle.first.difficulty).to eq data[:difficulty]
+      expect(puzzle_collection.puzzles.count).to eq 0
+      expect(other_puzzle_collection.puzzles.count).to eq 1
+      expect(PuzzleCollectionsPuzzle.count).to eq 1
+    end
+
+    it 'does not double add puzzle to collection' do
+      puzzle
+      puzzle.puzzle_collections_puzzles.create!(puzzle_collection: puzzle_collection)
+      expect(Puzzle.count).to eq 1
+      expect(puzzle_collection.puzzles.count).to eq 1
+      expect(PuzzleCollectionsPuzzle.count).to eq 1
+
+      data = {
+        source_collection_id: puzzle_collection.id,
+      }
+      patch_api "/api/puzzles/#{puzzle.id}", data, admin_user
+
+      expect(response).to have_http_status(200)
+      expect(Puzzle.count).to eq 1
+      expect(puzzle_collection.puzzles.count).to eq 1
+      expect(PuzzleCollectionsPuzzle.count).to eq 1
     end
   end
 end

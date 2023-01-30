@@ -1,6 +1,7 @@
 class Api::PuzzlesController < ApplicationController
-  before_action :authenticate_user!, only: %i[index create destroy group_counts]
-  before_action :load_puzzle, only: %i[show check destroy]
+  before_action :authenticate_user!, only: %i[index create destroy update group_counts]
+  before_action :load_puzzle, only: %i[show check]
+  load_resource only: %i[update destroy]
 
   def random
     authorize! :read, Puzzle
@@ -38,7 +39,7 @@ class Api::PuzzlesController < ApplicationController
     correct = @puzzle.solution == params[:grid]
 
     if correct
-      Honeybadger.notify("Someone solved puzzle #{@puzzle.public_id}!")
+      Honeybadger.notify("Someone solved puzzle #{@puzzle.public_id}")
     end
 
     render json: {
@@ -64,7 +65,12 @@ class Api::PuzzlesController < ApplicationController
   def index
     authorize! :read_all, Puzzle
 
-    serialized_puzzles = Puzzle.order(:id).map do |puzzle|
+    puzzles = Puzzle.order(:id)
+    if params[:id].present?
+      puzzles = puzzles.where(id: params[:id])
+    end
+
+    serialized_puzzles = puzzles.map do |puzzle|
       PuzzleSerializer.new(puzzle).as_json
     end
 
@@ -80,6 +86,20 @@ class Api::PuzzlesController < ApplicationController
     @puzzle.invalidate_puzzle_cache
 
     render json: PuzzleSerializer.new(@puzzle).as_json
+  end
+
+  def update
+    authorize! :manage, @puzzle
+
+    @puzzle.assign_attributes(puzzle_update_filters)
+
+    if @puzzle.save
+      render json: PuzzleSerializer.new(@puzzle).as_json
+    else
+      render json: {
+        errors: @puzzle.errors.messages,
+      }, status: :bad_request
+    end
   end
 
   def group_counts
@@ -125,7 +145,11 @@ class Api::PuzzlesController < ApplicationController
     # permit doesn't work with nested arrays :-/
     params.require(:puzzle).permit!
     params.require(:puzzle).to_h.slice(
-      :constraints, :variant, :difficulty, :solution, :source_name, :source_url
+      :constraints, :variant, :difficulty, :solution, :source_collection_id
     )
+  end
+
+  def puzzle_update_filters
+    params.require(:puzzle).permit(:difficulty, :source_collection_id)
   end
 end

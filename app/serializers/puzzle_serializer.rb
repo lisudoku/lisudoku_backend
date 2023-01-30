@@ -1,3 +1,4 @@
 class PuzzleSerializer < ActiveModel::Serializer
-  attributes :public_id, :variant, :difficulty, :constraints
+  attributes :id, :public_id, :variant, :difficulty, :constraints,
+             :source_collection_id, :source_collection_name
 end

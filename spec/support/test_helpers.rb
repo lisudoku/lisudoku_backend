@@ -9,6 +9,8 @@ def call_api(method, url, params = nil, user = nil)
     post url, params: params, headers: headers, as: :json
   when :delete
     delete url, params: params, headers: headers, as: :json
+  when :patch
+    patch url, params: params, headers: headers, as: :json
   end
 end
 
@@ -22,4 +24,8 @@ end
 
 def delete_api(*args)
   call_api(:delete, *args)
+end
+
+def patch_api(*args)
+  call_api(:patch, *args)
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_18_120140) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_27_224554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_18_120140) do
     t.string "jti", null: false
     t.datetime "exp", null: false
     t.index ["jti"], name: "index_jwt_denylist_on_jti"
+  end
+
+  create_table "puzzle_collections", force: :cascade do |t|
+    t.string "name"
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "puzzle_collections_puzzles", force: :cascade do |t|
+    t.bigint "puzzle_collection_id"
+    t.bigint "puzzle_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["puzzle_collection_id", "puzzle_id"], name: "unique_collection_membership", unique: true
+    t.index ["puzzle_collection_id"], name: "index_puzzle_collections_puzzles_on_puzzle_collection_id"
+    t.index ["puzzle_id"], name: "index_puzzle_collections_puzzles_on_puzzle_id"
   end
 
   create_table "puzzles", force: :cascade do |t|
@@ -31,7 +48,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_18_120140) do
     t.datetime "updated_at", null: false
     t.string "source_name"
     t.string "source_url"
+    t.bigint "source_collection_id"
     t.index ["public_id"], name: "index_puzzles_on_public_id", unique: true
+    t.index ["source_collection_id"], name: "index_puzzles_on_source_collection_id"
     t.index ["variant", "difficulty"], name: "index_puzzles_on_variant_and_difficulty"
     t.index ["variant"], name: "index_puzzles_on_variant"
   end
@@ -56,4 +75,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_18_120140) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "puzzle_collections_puzzles", "puzzle_collections"
+  add_foreign_key "puzzle_collections_puzzles", "puzzles"
+  add_foreign_key "puzzles", "puzzle_collections", column: "source_collection_id"
 end

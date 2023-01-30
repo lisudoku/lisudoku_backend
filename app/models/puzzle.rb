@@ -4,8 +4,20 @@
 # - constraints: a big json describing the puzzle (grid size, regions, thermos)
 # - solution: the unique solution to the puzzle
 # - tags: TBD
+# - source_collection_id: its main collection (which is display on the puzzle page)
 class Puzzle < ApplicationRecord
   before_validation :set_public_id, :ensure_default_regions
+  after_save :update_collection_memberships
+
+  belongs_to :source_collection, class_name: 'PuzzleCollection', optional: true
+  has_many :puzzle_collections_puzzles, dependent: :destroy
+  has_many :puzzle_collections, through: :puzzle_collections_puzzles
+
+  delegate :id, to: :source_collection, prefix: true, allow_nil: true
+  delegate :name, to: :source_collection, prefix: true, allow_nil: true
+
+  validates :difficulty, presence: true
+  validates :variant, presence: true
   validates :constraints, presence: true
   validate :check_constraints
   validates :solution, presence: true
@@ -40,6 +52,22 @@ class Puzzle < ApplicationRecord
 
   def set_public_id
     self.public_id ||= SecureRandom.urlsafe_base64(15)
+  end
+
+  def update_collection_memberships
+    if source_collection_id == source_collection_id_before_last_save
+      return
+    end
+
+    if source_collection_id.present?
+      puzzle_collections_puzzles.where(puzzle_collection_id: source_collection_id).first_or_create
+    end
+
+    if source_collection_id_before_last_save.present?
+      puzzle_collections_puzzles.find_by(
+        puzzle_collection_id: source_collection_id_before_last_save,
+      ).destroy!
+    end
   end
 
   def check_constraints
