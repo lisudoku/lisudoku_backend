@@ -12,6 +12,7 @@ class Puzzle < ApplicationRecord
   belongs_to :source_collection, class_name: 'PuzzleCollection', optional: true
   has_many :puzzle_collections_puzzles, dependent: :destroy
   has_many :puzzle_collections, through: :puzzle_collections_puzzles
+  has_many :user_solutions
 
   delegate :id, to: :source_collection, prefix: true, allow_nil: true
   delegate :name, to: :source_collection, prefix: true, allow_nil: true

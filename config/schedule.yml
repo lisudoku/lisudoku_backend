@@ -2,3 +2,8 @@ tv_cleanup:
   cron: "*/1 * * * *"
   class: "TvCleanupJob"
   queue: default
+
+ghost_solver:
+  cron: "*/3 * * * *"
+  class: "GhostSolverJob"
+  queue: default
