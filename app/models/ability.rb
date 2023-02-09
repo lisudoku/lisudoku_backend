@@ -6,6 +6,7 @@ class Ability
   def initialize(user)
     can :read, Puzzle
     can :read, PuzzleCollection
+    can :read, Competition
 
     return unless user.present?
 
@@ -13,5 +14,6 @@ class Ability
 
     can :manage, Puzzle
     can :manage, PuzzleCollection
+    can :manage, Competition
   end
 end

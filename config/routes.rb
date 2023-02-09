@@ -32,5 +32,6 @@ Rails.application.routes.draw do
         delete 'puzzles/:puzzle_id', to: 'puzzle_collections#remove_puzzle'
       end
     end
+    resources :competitions, only: %i[index create show destroy update]
   end
 end

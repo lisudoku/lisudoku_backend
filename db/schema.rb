@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_06_222130) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_08_214751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "competitions", force: :cascade do |t|
+    t.string "name"
+    t.string "url"
+    t.datetime "from_date"
+    t.datetime "to_date"
+    t.bigint "puzzle_collection_id"
+    t.bigint "ib_puzzle_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ib_puzzle_collection_id"], name: "index_competitions_on_ib_puzzle_collection_id"
+    t.index ["puzzle_collection_id"], name: "index_competitions_on_puzzle_collection_id"
+  end
 
   create_table "jwt_denylist", force: :cascade do |t|
     t.string "jti", null: false
@@ -85,6 +98,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_222130) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "competitions", "puzzle_collections"
+  add_foreign_key "competitions", "puzzle_collections", column: "ib_puzzle_collection_id"
   add_foreign_key "puzzle_collections_puzzles", "puzzle_collections"
   add_foreign_key "puzzle_collections_puzzles", "puzzles"
   add_foreign_key "puzzles", "puzzle_collections", column: "source_collection_id"
