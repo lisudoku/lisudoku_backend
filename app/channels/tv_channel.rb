@@ -69,14 +69,14 @@ class TvChannel < ApplicationCable::Channel
   def handle_puzzle_update(data)
     puzzle_id = data['puzzle_id']
     id = "#{self.user_id}_#{puzzle_id}"
-    grid, notes, selected_cell, solved = data.values_at('grid', 'notes', 'selected_cell', 'solved')
+    grid, notes, selected_cells, solved = data.values_at('grid', 'notes', 'selected_cells', 'solved')
     tv_puzzle = {
       id: id,
       puzzle_id: puzzle_id,
       user_id: self.user_id,
       grid: grid,
       notes: notes,
-      selected_cell: selected_cell,
+      selected_cells: selected_cells,
       solved: solved,
       updated_at: Time.now.iso8601,
     }

@@ -17,7 +17,7 @@ class GhostSolverJob
 
     id = "ghost_#{user_solution.puzzle_id}_#{SecureRandom.urlsafe_base64(2)}"
     solved = false
-    selected_cell = nil
+    selected_cells = []
     puzzle = user_solution.puzzle
     grid_size = puzzle.constraints['grid_size']
     grid = Array.new(grid_size) { Array.new(grid_size) }
@@ -26,7 +26,7 @@ class GhostSolverJob
       id: id,
       grid: grid,
       notes: notes,
-      selected_cell: selected_cell,
+      selected_cells: selected_cells,
       solved: solved,
       updated_at: Time.now.iso8601,
       created_at: Time.now.iso8601,
@@ -41,23 +41,30 @@ class GhostSolverJob
       last_time = crt_time
       sleep delay_time
 
-      type, cell, value = step.values_at('type', 'cell', 'value')
-      row, col = cell.values_at('row', 'col')
+      type, cells, value = step.values_at('type', 'cells', 'value')
 
-      if type == 'note'
-        if notes[row][col].include?(value)
-          notes[row][col].delete(value)
-        else
-          notes[row][col] << value
-        end
-      elsif type == 'delete'
-        grid[row][col] = nil
-        notes[row][col] = []
-      elsif type == 'digit'
-        grid[row][col] = value
+      # smooth transition from previous data
+      if cells.blank?
+        cells = [ step['cell'] ]
       end
 
-      tv_puzzle[:selected_cell] = cell
+      cells.each do |cell|
+        row, col = cell.values_at('row', 'col')
+        if type == 'note'
+          if notes[row][col].include?(value)
+            notes[row][col].delete(value)
+          else
+            notes[row][col] << value
+          end
+        elsif type == 'delete'
+          grid[row][col] = nil
+          notes[row][col] = []
+        elsif type == 'digit'
+          grid[row][col] = value
+        end
+      end
+
+      tv_puzzle[:selected_cells] = cells
       broadcast_update(tv_puzzle)
     end
 

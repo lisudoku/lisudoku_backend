@@ -41,7 +41,7 @@ class Api::PuzzlesController < ApplicationController
     if correct
       Honeybadger.notify("Someone solved puzzle #{@puzzle.public_id}")
 
-      actions = params.permit(actions: [:type, :value, :time, cell: {}]).to_h[:actions]
+      actions = params.permit(actions: [:type, :value, :time, cells: [:row, :col]]).to_h[:actions]
       if actions.size < 1000
         @puzzle.user_solutions.create!(steps: actions)
       end
