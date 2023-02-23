@@ -8,7 +8,7 @@ class Api::PuzzlesController < ApplicationController
 
     all_puzzle_ids = Puzzle.all_ids(puzzle_filters)
 
-    puzzle_ids = all_puzzle_ids - params[:id_blacklist]
+    puzzle_ids = all_puzzle_ids - params.fetch(:id_blacklist, [])
 
     puzzle = if puzzle_ids.present?
       random_index = rand(puzzle_ids.size)

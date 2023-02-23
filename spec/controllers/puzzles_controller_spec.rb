@@ -26,6 +26,20 @@ describe 'Puzzles', type: :request do
     end
   end
 
+  describe 'random' do
+    it 'returns a random puzzle' do
+      puzzle_filters = puzzle.slice(:variant, :difficulty)
+      post_api '/api/puzzles/random', puzzle_filters
+
+      expect(response).to have_http_status(200)
+      body = JSON.parse(response.body)
+      expect(body['public_id']).to eq(puzzle.public_id)
+      expect(body['variant']).to eq(puzzle.variant)
+      expect(body['difficulty']).to eq(puzzle.difficulty)
+      expect(body['constraints']['grid_size']).to eq(puzzle.constraints['grid_size'])
+    end
+  end
+
   describe 'index' do
     it 'returns a permission error if normal user', :error_response do
       get_api '/api/puzzles', user
