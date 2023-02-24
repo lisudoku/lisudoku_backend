@@ -18,6 +18,13 @@ class TvChannel < ApplicationCable::Channel
     puts "Subscribed to #{params[:channel]} (user #{user_id})"
     self.is_player = !!params[:is_player]
 
+    total_count = redis_viewer_count + redis_puzzles_count
+    if total_count > ENV.fetch('TV_MAX_CONNECTIONS', '40').to_i
+      Honeybadger.notify("TV connection rejected! player=#{is_player}")
+      reject
+      return
+    end
+
     unless is_player
       redis_add_viewer(user_id)
       handle_viewer_count_update
