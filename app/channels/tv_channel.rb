@@ -88,16 +88,14 @@ class TvChannel < ApplicationCable::Channel
       updated_at: Time.now.iso8601,
     }
 
-    unless redis_puzzle_exists?(id)
+    if redis_puzzle_exists?(id)
+      Honeybadger.notify('Someone is playing!')
+    else
       puzzle = Puzzle.find_by(public_id: puzzle_id)
       tv_puzzle.merge!({
         created_at: Time.now.iso8601,
         **puzzle.slice(:constraints, :variant, :difficulty),
       })
-
-      if redis_puzzles_count == 0
-        Honeybadger.notify('Someone is playing!')
-      end
     end
 
     redis_update_puzzle(tv_puzzle)
