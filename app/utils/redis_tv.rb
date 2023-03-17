@@ -17,6 +17,11 @@ module RedisTv
     })
   end
 
+  def redis_get_puzzle(id)
+    hash = Kredis.hash REDIS_KEY, typed: :json
+    hash[id]
+  end
+
   def redis_get_puzzles
     hash = Kredis.hash REDIS_KEY, typed: :json
     hash.values

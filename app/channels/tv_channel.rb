@@ -77,6 +77,9 @@ class TvChannel < ApplicationCable::Channel
     puzzle_id = data['puzzle_id']
     id = "#{self.user_id}_#{puzzle_id}"
     grid, notes, selected_cells, solved = data.values_at('grid', 'notes', 'selected_cells', 'solved')
+
+    redis_puzzle = redis_get_puzzle(id)
+
     tv_puzzle = {
       id: id,
       puzzle_id: puzzle_id,
@@ -86,10 +89,13 @@ class TvChannel < ApplicationCable::Channel
       selected_cells: selected_cells,
       solved: solved,
       updated_at: Time.now.iso8601,
+      update_count: (redis_puzzle.try(:[], 'update_count') || -1) + 1,
     }
 
-    if redis_puzzle_exists?(id)
-      Honeybadger.notify('Someone is playing!')
+    if redis_puzzle.present?
+      if tv_puzzle[:update_count] == 1
+        Honeybadger.notify('Someone is playing!')
+      end
     else
       puzzle = Puzzle.find_by(public_id: puzzle_id)
       tv_puzzle.merge!({
