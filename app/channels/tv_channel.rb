@@ -63,7 +63,7 @@ class TvChannel < ApplicationCable::Channel
       tv_puzzles = redis_get_puzzles
       viewer_count = redis_viewer_count
       if viewer_count == 1
-        Honeybadger.notify('Someone is watching!')
+        Honeybadger.notify('Someone is watching!', error_class: 'TV active')
       end
       init_data = {
         tv_puzzles: tv_puzzles,
@@ -94,7 +94,7 @@ class TvChannel < ApplicationCable::Channel
 
     if redis_puzzle.present?
       if tv_puzzle[:update_count] == 1
-        Honeybadger.notify('Someone is playing!')
+        Honeybadger.notify('Someone is playing!', error_class: 'Player active')
       end
     else
       puzzle = Puzzle.find_by(public_id: puzzle_id)

@@ -18,7 +18,10 @@ class Api::PuzzlesController < ApplicationController
 
     if puzzle.blank?
       unless current_user&.admin?
-        Honeybadger.notify("Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved")
+        Honeybadger.notify(
+          "Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved",
+          error_class: 'Category fully solved'
+        )
       end
       render json: {}, status: :not_found
       return
@@ -39,7 +42,10 @@ class Api::PuzzlesController < ApplicationController
     correct = @puzzle.solution == params[:grid]
 
     if correct
-      Honeybadger.notify("Someone solved puzzle #{@puzzle.public_id}")
+      Honeybadger.notify(
+        "Someone solved puzzle #{@puzzle.public_id}",
+        error_class: 'Solved puzzle'
+      )
 
       actions = params.permit(actions: [:type, :value, :time, cells: [:row, :col]]).to_h[:actions]
       if actions.size < 1000
