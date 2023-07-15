@@ -12,7 +12,9 @@ class GhostSolverJob
   private
 
   def replay_solution
-    user_solution = UserSolution.all.sample
+    all_solutions = UserSolution.cached_all
+    user_solution = all_solutions.sample
+
     return 1000 if user_solution.blank?
 
     id = "ghost_#{user_solution.puzzle_id}_#{SecureRandom.urlsafe_base64(2)}"
