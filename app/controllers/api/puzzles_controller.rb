@@ -43,7 +43,7 @@ class Api::PuzzlesController < ApplicationController
 
     if correct
       Honeybadger.notify(
-        "Someone solved puzzle #{@puzzle.public_id}",
+        "Someone solved puzzle #{@puzzle.public_id} (variant #{@puzzle.variant}, difficulty #{@puzzle.difficulty})",
         error_class: 'Solved puzzle'
       )
 
