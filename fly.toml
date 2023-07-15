@@ -1,8 +1,16 @@
-# fly.toml file generated for lisudoku on 2022-12-17T23:54:56+02:00
+# Regenerated after upgrading flyctl to new version
+# fly.toml app configuration file generated for lisudoku on 2023-05-27T12:24:17+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "lisudoku"
+primary_region = "fra"
 kill_signal = "SIGINT"
-kill_timeout = 5
+kill_timeout = "5s"
+
+[experimental]
+  auto_rollback = true
 
 [build]
   [build.args]
@@ -15,40 +23,34 @@ kill_timeout = 5
 [env]
   PORT = "8080"
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
+[processes]
+  web = "bin/rails fly:server"
+  worker = "bundle exec sidekiq"
 
 [[services]]
-  http_checks = []
+  protocol = "tcp"
   internal_port = 8080
   processes = ["web"]
-  protocol = "tcp"
-  script_checks = []
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
+    type = "connections"
     hard_limit = 25
     soft_limit = 20
-    type = "connections"
-
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
 
   [[services.tcp_checks]]
-    grace_period = "1s"
     interval = "15s"
-    restart_limit = 0
     timeout = "2s"
+    grace_period = "1s"
+    restart_limit = 0
 
 [[statics]]
   guest_path = "/app/public"
   url_prefix = "/"
-
-[processes]
-web = "bin/rails fly:server"
-worker = "bundle exec sidekiq"
