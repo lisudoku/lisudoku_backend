@@ -7,8 +7,17 @@ class Api::PuzzlesController < ApplicationController
     authorize! :read, Puzzle
 
     all_puzzle_ids = Puzzle.all_ids(puzzle_filters)
+    puzzle_ids_blacklist = params.fetch(:id_blacklist, [])
 
-    puzzle_ids = all_puzzle_ids - params.fetch(:id_blacklist, [])
+    if puzzle_ids_blacklist.size > 0
+      Honeybadger.notify(
+        "User has #{puzzle_ids_blacklist.size} solved puzzles",
+        error_class: 'User solve count'
+      )
+    end
+
+    puzzle_ids = all_puzzle_ids - puzzle_ids_blacklist
+
 
     puzzle = if puzzle_ids.present?
       random_index = rand(puzzle_ids.size)
@@ -43,7 +52,7 @@ class Api::PuzzlesController < ApplicationController
 
     if correct
       Honeybadger.notify(
-        "Someone solved puzzle #{@puzzle.public_id} (variant #{@puzzle.variant}, difficulty #{@puzzle.difficulty})",
+        "Someone solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})",
         error_class: 'Solved puzzle'
       )
 
