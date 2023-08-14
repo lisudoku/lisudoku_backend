@@ -9,7 +9,7 @@ class Api::PuzzlesController < ApplicationController
     all_puzzle_ids = Puzzle.all_ids(puzzle_filters)
     puzzle_ids_blacklist = params.fetch(:id_blacklist, [])
 
-    if puzzle_ids_blacklist.size > 0
+    if puzzle_ids_blacklist.size > 0 && !current_user&.admin?
       Honeybadger.notify(
         "User has #{puzzle_ids_blacklist.size} solved puzzles",
         error_class: 'User solve count'
