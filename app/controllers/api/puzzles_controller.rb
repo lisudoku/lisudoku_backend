@@ -26,7 +26,11 @@ class Api::PuzzlesController < ApplicationController
     end
 
     if puzzle.blank?
-      unless current_user&.admin?
+      unless current_user&.admin? ||
+             (
+               puzzle_filters[:variant] == Puzzle.variants[:antiking] &&
+               puzzle_filters[:difficulty] == Puzzle.difficulties[:easy4x4]
+             )
         Honeybadger.notify(
           "Category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]} fully solved",
           error_class: 'Category fully solved'
