@@ -102,6 +102,32 @@ class Api::PuzzlesController < ApplicationController
     }
   end
 
+  # Download puzzles for offline play
+  def download
+    authorize! :read, Puzzle
+
+    puzzle_ids_blacklist = params.fetch(:id_blacklist, []).to_set
+    unsolved_puzzles = Puzzle.all.reject{|p| puzzle_ids_blacklist.include?(p.public_id)}
+
+    puzzles = unsolved_puzzles.group_by{|p| [p.variant, p.difficulty]}.flat_map do |group, group_puzzles|
+      variant, difficulty = group
+      count = if variant == Puzzle.variants[:classic]
+        difficulty == Puzzle.difficulties[:easy9x9] ? 30 : 7
+      else
+        2
+      end
+      group_puzzles.sample(count)
+    end
+
+    serialized_puzzles = puzzles.map do |puzzle|
+      PuzzleSerializer.new(puzzle).as_json
+    end
+
+    render json: {
+      puzzles: serialized_puzzles,
+    }
+  end
+
   def destroy
     authorize! :manage, @puzzle
 

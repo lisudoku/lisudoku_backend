@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :puzzles, only: %i[show create index destroy update] do
       collection do
         post 'random'
+        post 'download'
         get 'group_counts'
       end
       member do
