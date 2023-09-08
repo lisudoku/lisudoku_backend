@@ -20,8 +20,7 @@ class Api::PuzzlesController < ApplicationController
 
 
     puzzle = if puzzle_ids.present?
-      random_index = rand(puzzle_ids.size)
-      puzzle_id = puzzle_ids[random_index]
+      puzzle_id = puzzle_ids.sample
       Puzzle.find_by(public_id: puzzle_id)
     end
 
