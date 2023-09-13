@@ -107,7 +107,7 @@ class Api::PuzzlesController < ApplicationController
     authorize! :read, Puzzle
 
     puzzle_ids_blacklist = params.fetch(:id_blacklist, []).to_set
-    unsolved_puzzles = Puzzle.all.reject{|p| puzzle_ids_blacklist.include?(p.public_id)}
+    unsolved_puzzles = Puzzle.cached_all.reject{|p| puzzle_ids_blacklist.include?(p.public_id)}
 
     puzzles = unsolved_puzzles.group_by{|p| [p.variant, p.difficulty]}.flat_map do |group, group_puzzles|
       variant, difficulty = group

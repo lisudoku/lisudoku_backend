@@ -37,6 +37,12 @@ class Puzzle < ApplicationRecord
     end
   end
 
+  def self.cached_all
+    Rails.cache.fetch('all_puzzles_cache', expires_in: 24.hours) do
+      Puzzle.all.to_a
+    end
+  end
+
   def invalidate_puzzle_cache
     puzzle_filters = {
       variant: variant,
