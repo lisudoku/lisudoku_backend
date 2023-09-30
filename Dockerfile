@@ -69,6 +69,23 @@ RUN bundle install && rm -rf vendor/bundle/ruby/*/cache
 
 #######################################################################
 
+# install trainer
+
+FROM build_deps as puzzler
+
+# Get Rust; NOTE: using sh for better compatibility with other base images
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+# Add .cargo/bin to PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN \
+  git clone --depth 1 https://github.com/lisudoku/lisudoku_puzzler.git && \
+  cd lisudoku_puzzler && \
+  cargo build --release
+
+#######################################################################
+
 # install deployment packages
 
 FROM base
@@ -87,6 +104,9 @@ RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
 COPY --from=gems /app /app
 COPY --from=gems /usr/lib/fullstaq-ruby/versions /usr/lib/fullstaq-ruby/versions
 COPY --from=gems /usr/local/bundle /usr/local/bundle
+
+# copy puzzler
+COPY --from=puzzler /app/lisudoku_puzzler/target/release/lisudoku_puzzler /app/vendor/lisudoku_puzzler
 
 #######################################################################
 
