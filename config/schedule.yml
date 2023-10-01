@@ -7,3 +7,8 @@ ghost_solver:
   cron: "*/3 * * * *"
   class: "GhostSolverJob"
   queue: default
+
+trainer_puzzle_generator:
+  cron: "0 */1 * * *"
+  class: "TrainerPuzzleGeneratorJob"
+  queue: default

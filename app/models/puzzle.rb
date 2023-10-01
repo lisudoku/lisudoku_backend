@@ -13,6 +13,7 @@ class Puzzle < ApplicationRecord
   has_many :puzzle_collections_puzzles, dependent: :destroy
   has_many :puzzle_collections, through: :puzzle_collections_puzzles
   has_many :user_solutions, dependent: :destroy
+  has_many :trainer_puzzles, dependent: :destroy
 
   delegate :id, to: :source_collection, prefix: true, allow_nil: true
   delegate :name, to: :source_collection, prefix: true, allow_nil: true
@@ -49,6 +50,21 @@ class Puzzle < ApplicationRecord
       difficulty: difficulty,
     }
     Rails.cache.delete(self.class.puzzle_ids_cache_key(puzzle_filters))
+  end
+
+  def grid_size
+    self.constraints['grid_size']
+  end
+
+  def initial_grid_string
+    grid = '0' * (self.grid_size * self.grid_size)
+    self.constraints['fixed_numbers'].each do |fixed_number|
+      row = fixed_number.dig('position', 'row')
+      col = fixed_number.dig('position', 'col')
+      index = row * self.grid_size + col
+      grid[index] = fixed_number['value'].to_s
+    end
+    grid
   end
 
   private

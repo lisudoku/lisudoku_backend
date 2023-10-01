@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_08_214751) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_01_122209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,12 +68,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_214751) do
     t.index ["variant"], name: "index_puzzles_on_variant"
   end
 
+  create_table "trainer_puzzles", force: :cascade do |t|
+    t.bigint "puzzle_id"
+    t.string "variant", null: false
+    t.string "grid", null: false
+    t.string "technique", null: false
+    t.json "solutions", null: false
+    t.integer "solve_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["puzzle_id", "grid", "technique"], name: "unique_trainer_puzzle", unique: true
+    t.index ["puzzle_id"], name: "index_trainer_puzzles_on_puzzle_id"
+  end
+
   create_table "user_solutions", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "puzzle_id"
     t.json "steps"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "processed_by_trainer", default: false, null: false
+    t.index ["processed_by_trainer"], name: "user_solutions_processed_by_trainer"
     t.index ["puzzle_id"], name: "index_user_solutions_on_puzzle_id"
     t.index ["user_id"], name: "index_user_solutions_on_user_id"
   end
@@ -103,6 +118,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_214751) do
   add_foreign_key "puzzle_collections_puzzles", "puzzle_collections"
   add_foreign_key "puzzle_collections_puzzles", "puzzles"
   add_foreign_key "puzzles", "puzzle_collections", column: "source_collection_id"
+  add_foreign_key "trainer_puzzles", "puzzles"
   add_foreign_key "user_solutions", "puzzles"
   add_foreign_key "user_solutions", "users"
 end
