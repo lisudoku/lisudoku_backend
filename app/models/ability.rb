@@ -7,6 +7,7 @@ class Ability
     can :read, Puzzle
     can :read, PuzzleCollection
     can :read, Competition
+    can :read, TrainerPuzzle
 
     return unless user.present?
 
