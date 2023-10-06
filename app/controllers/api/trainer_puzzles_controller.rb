@@ -1,4 +1,6 @@
 class Api::TrainerPuzzlesController < ApplicationController
+  load_resource only: %i[check]
+
   def random
     authorize! :read, TrainerPuzzle
 
@@ -31,6 +33,25 @@ class Api::TrainerPuzzlesController < ApplicationController
     end
 
     render json: TrainerPuzzleSerializer.new(trainer_puzzle).as_json
+  end
+
+  def check
+    cell = params.require(:cell).permit(:value, position: [:row, :col])
+
+    correct = @trainer_puzzle.solutions.include?(cell)
+
+    if correct
+      @trainer_puzzle.increment!(:solve_count)
+
+      Honeybadger.notify(
+        "Solved trainer puzzle #{@trainer_puzzle.id} (#{@trainer_puzzle.technique}, #{@trainer_puzzle.solve_count})",
+        error_class: 'Solved trainer puzzle'
+      )
+    end
+
+    render json: {
+      correct: correct,
+    }
   end
 
   private

@@ -31,6 +31,9 @@ Rails.application.routes.draw do
       collection do
         post 'random'
       end
+      member do
+        post 'check'
+      end
     end
     resources :puzzle_collections, only: %i[index create show destroy update] do
       member do
