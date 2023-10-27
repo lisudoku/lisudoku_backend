@@ -5,10 +5,16 @@
 # - solutions: array of correct digit deduction using the technique (cell + value)
 # - solve_count: number of solves
 class TrainerPuzzle < ApplicationRecord
+  belongs_to :puzzle
+
   def self.all_ids(trainer_puzzle_filters)
     Rails.cache.fetch(self.ids_cache_key(trainer_puzzle_filters), expires_in: 24.hours) do
       TrainerPuzzle.where(trainer_puzzle_filters).ids
     end
+  end
+
+  def puzzle_public_id
+    puzzle.public_id
   end
 
   private
