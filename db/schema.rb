@@ -75,10 +75,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_122209) do
     t.string "technique", null: false
     t.json "solutions", null: false
     t.integer "solve_count", default: 0, null: false
+    t.integer "fail_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["puzzle_id", "grid", "technique"], name: "unique_trainer_puzzle", unique: true
     t.index ["puzzle_id"], name: "index_trainer_puzzles_on_puzzle_id"
+    t.index ["variant", "technique"], name: "trainer_puzzle_random_index"
   end
 
   create_table "user_solutions", force: :cascade do |t|
