@@ -40,15 +40,15 @@ class Api::TrainerPuzzlesController < ApplicationController
 
     correct = @trainer_puzzle.solutions.include?(cell)
 
+    unless current_user&.admin?
+      Honeybadger.notify(
+        "Attempted trainer puzzle #{@trainer_puzzle.id} (#{@trainer_puzzle.technique}, #{@trainer_puzzle.solve_count}) #{correct}",
+        error_class: 'Attempted trainer puzzle'
+      )
+    end
+
     if correct
       @trainer_puzzle.increment!(:solve_count)
-
-      unless current_user&.admin?
-        Honeybadger.notify(
-          "Solved trainer puzzle #{@trainer_puzzle.id} (#{@trainer_puzzle.technique}, #{@trainer_puzzle.solve_count})",
-          error_class: 'Solved trainer puzzle'
-        )
-      end
     else
       @trainer_puzzle.increment!(:fail_count)
     end
