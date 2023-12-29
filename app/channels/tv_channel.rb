@@ -14,6 +14,8 @@ class TvChannel < ApplicationCable::Channel
 
   attr_accessor :is_player
 
+  @@last_wake_at = nil
+
   def subscribed
     puts "Subscribed to #{params[:channel]} (user #{user_id})"
     self.is_player = !!params[:is_player]
@@ -69,6 +71,16 @@ class TvChannel < ApplicationCable::Channel
         tv_puzzles: tv_puzzles,
         viewer_count: viewer_count,
       }
+
+      # Note: tv_puzzles will not contain ghost puzzles because we don't persist them in redis
+      if tv_puzzles.empty? && (@@last_wake_at.nil? || @@last_wake_at <= 5.minutes.ago)
+        # Wake up ghost solver if someone is watching and no puzzle is playing
+        GhostSolverJob.perform_async
+        # Also clean up old stuck puzzles (connection still active, but no updates in a while)
+        TvCleanupJob.perform_async
+
+        @@last_wake_at = Time.now
+      end
       transmit({ type: MESSAGE_TYPES[:init_puzzles], data: init_data })
     end
   end

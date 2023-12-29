@@ -1,5 +1,5 @@
 tv_cleanup:
-  cron: "*/1 * * * *"
+  cron: "0 * * * *"
   class: "TvCleanupJob"
   queue: default
 
@@ -7,6 +7,7 @@ ghost_solver:
   cron: "*/3 * * * *"
   class: "GhostSolverJob"
   queue: default
+  status: disabled
 
 trainer_puzzle_generator:
   cron: "0 */1 * * *"

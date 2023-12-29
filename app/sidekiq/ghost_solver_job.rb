@@ -1,9 +1,11 @@
 class GhostSolverJob
   include Sidekiq::Job
 
+  MIN_RUN_SECONDS = 30
+
   def perform
     start_time = Time.now
-    while Time.now - start_time < 100
+    while Time.now - start_time < MIN_RUN_SECONDS
       replay_solution
       sleep 2
     end
