@@ -93,8 +93,9 @@ class Api::PuzzlesController < ApplicationController
       puzzles = puzzles.where(id: params[:id])
     end
 
+    solved_puzzle_ids = UserSolution.cached_puzzle_ids
     serialized_puzzles = puzzles.map do |puzzle|
-      PuzzleSerializer.new(puzzle).as_json
+      PuzzleSerializer.new(puzzle, { solved_puzzle_ids: solved_puzzle_ids }).as_json
     end
 
     render json: {
