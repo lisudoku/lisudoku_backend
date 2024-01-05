@@ -5,6 +5,7 @@
 # - solution: the unique solution to the puzzle
 # - tags: TBD
 # - source_collection_id: its main collection (which is display on the puzzle page)
+# - author: string for now
 class Puzzle < ApplicationRecord
   before_validation :set_public_id, :ensure_default_regions
   after_save :update_collection_memberships

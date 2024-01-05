@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_01_122209) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_05_232040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_122209) do
     t.string "source_name"
     t.string "source_url"
     t.bigint "source_collection_id"
+    t.string "author"
     t.index ["public_id"], name: "index_puzzles_on_public_id", unique: true
     t.index ["source_collection_id"], name: "index_puzzles_on_source_collection_id"
     t.index ["variant", "difficulty"], name: "index_puzzles_on_variant_and_difficulty"
