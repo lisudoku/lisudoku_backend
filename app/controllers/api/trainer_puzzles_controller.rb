@@ -36,7 +36,7 @@ class Api::TrainerPuzzlesController < ApplicationController
   end
 
   def check
-    cell = params.require(:cell).permit(:value, position: [:row, :col])
+    cell = params[:cell]&.permit(:value, position: [:row, :col])
 
     correct = @trainer_puzzle.solutions.include?(cell)
 
