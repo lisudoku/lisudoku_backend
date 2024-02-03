@@ -16,6 +16,7 @@ class Api::CompetitionsController < ApplicationController
       )
     end
 
+    # Note: enable config.cache_classes if you run into an error here on development
     competitions = Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       competitions_query.to_a
     end
