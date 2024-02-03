@@ -5,7 +5,7 @@ class Api::PuzzleCollectionsController < ApplicationController
   def index
     authorize! :read_all, PuzzleCollection
 
-    serialized_puzzle_collections = PuzzleCollection.order(:id).map do |puzzle_collection|
+    serialized_puzzle_collections = PuzzleCollection.order(id: :desc).map do |puzzle_collection|
       PuzzleCollectionSerializer.new(puzzle_collection).as_json
     end
 
