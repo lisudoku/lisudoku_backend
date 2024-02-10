@@ -161,20 +161,19 @@ class Api::PuzzlesController < ApplicationController
   def group_counts
     authorize! :read_all, Puzzle
 
-    group_counts = Puzzle.group(:variant, :difficulty).order(:variant, :difficulty).count
-
-    Puzzle.variants.keys.each do |variant|
-      Puzzle.difficulties.keys.each do |difficulty|
-        key = [ variant, difficulty ]
-        group_counts[key] ||= 0
-      end
+    puzzle_group_counts = Puzzle.group(:variant, :difficulty).order(:variant, :difficulty).count
+    Puzzle.variants.keys.product(Puzzle.difficulties.keys).each do |key|
+      puzzle_group_counts[key] ||= 0
     end
 
-    serialized_group_counts = group_counts.map do |key, count|
+    solved_group_counts = UserSolution.joins(:puzzle).group(:variant, :difficulty).count
+
+    serialized_group_counts = puzzle_group_counts.map do |key, count|
       {
         variant: key[0],
         difficulty: key[1],
-        count: count,
+        puzzle_count: count,
+        solve_count: solved_group_counts[key] || 0,
       }
     end
 
