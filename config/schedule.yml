@@ -1,5 +1,5 @@
 tv_cleanup:
-  cron: "0 * * * *"
+  cron: "*/15 * * * *"
   class: "TvCleanupJob"
   queue: default
 
