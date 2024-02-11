@@ -190,7 +190,7 @@ class Api::PuzzlesController < ApplicationController
       puzzle_group_counts[key] ||= 0
     end
 
-    solved_group_counts = UserSolution.joins(:puzzle).group(:variant, :difficulty).count
+    solved_group_counts = UserSolution.joins(:puzzle).group(:variant, :difficulty).distinct.count(:puzzle_id)
 
     serialized_group_counts = puzzle_group_counts.map do |key, count|
       {
