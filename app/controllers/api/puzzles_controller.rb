@@ -58,6 +58,7 @@ class Api::PuzzlesController < ApplicationController
     params.require(:grid)
 
     correct = @puzzle.solution == params[:grid]
+    stats = nil
 
     if correct
       Honeybadger.notify(
@@ -66,13 +67,36 @@ class Api::PuzzlesController < ApplicationController
       )
 
       actions = params.permit(actions: [:type, :value, :time, cells: [:row, :col]]).to_h[:actions]
-      if actions.size < 1000
-        @puzzle.user_solutions.create!(steps: actions)
+      solve_time = actions.last['time']
+      if actions.size > 5000
+        actions = nil
+        Honeybadger.notify(error_class: 'Too many actions!')
       end
+
+      # Use -1 because ties are considered worse
+      stats_query = @puzzle.user_solutions.select(
+        "PERCENTILE_DISC(0.5) WITHIN GROUP(ORDER BY solve_time) as median,
+        COUNT(*) as cnt,
+        percent_rank(#{solve_time.to_i - 1}) WITHIN GROUP(ORDER BY solve_time DESC) as rank"
+      )[0]
+
+      stats = {
+        median: stats_query.median,
+        count: stats_query.cnt + 1,
+        rank: (stats_query.rank * 100).round,
+      }
+
+      if stats[:count] == 1
+        stats[:rank] = 100
+        stats[:median] = solve_time
+      end
+
+      @puzzle.user_solutions.create!(steps: actions, solve_time: solve_time)
     end
 
     render json: {
       correct: correct,
+      stats: stats,
     }
   end
 

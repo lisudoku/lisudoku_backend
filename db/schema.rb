@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_05_232040) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_10_222008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,8 +91,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_05_232040) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "processed_by_trainer", default: false, null: false
+    t.integer "solve_time"
     t.index ["processed_by_trainer"], name: "user_solutions_processed_by_trainer"
     t.index ["puzzle_id"], name: "index_user_solutions_on_puzzle_id"
+    t.index ["solve_time"], name: "user_solutions_solve_time"
     t.index ["user_id"], name: "index_user_solutions_on_user_id"
   end
 
