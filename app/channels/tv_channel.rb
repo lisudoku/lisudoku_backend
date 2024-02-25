@@ -88,7 +88,7 @@ class TvChannel < ApplicationCable::Channel
   def handle_puzzle_update(data)
     puzzle_id = data['puzzle_id']
     id = "#{self.user_id}_#{puzzle_id}"
-    grid, notes, selected_cells, solved = data.values_at('grid', 'notes', 'selected_cells', 'solved')
+    grid, cell_marks, selected_cells, solved = data.values_at('grid', 'cell_marks', 'selected_cells', 'solved')
 
     redis_puzzle = redis_get_puzzle(id)
 
@@ -97,7 +97,7 @@ class TvChannel < ApplicationCable::Channel
       puzzle_id: puzzle_id,
       user_id: self.user_id,
       grid: grid,
-      notes: notes,
+      cell_marks: cell_marks,
       selected_cells: selected_cells,
       solved: solved,
       updated_at: Time.now.iso8601,

@@ -25,11 +25,11 @@ class GhostSolverJob
     puzzle = user_solution.puzzle
     grid_size = puzzle.constraints['grid_size']
     grid = Array.new(grid_size) { Array.new(grid_size) }
-    notes = Array.new(grid_size) { Array.new(grid_size) { [] } }
+    cell_marks = Array.new(grid_size) { Array.new(grid_size) { {} } }
     tv_puzzle = {
       id: id,
       grid: grid,
-      notes: notes,
+      cell_marks: cell_marks,
       selected_cells: selected_cells,
       solved: solved,
       updated_at: Time.now.iso8601,
@@ -54,15 +54,23 @@ class GhostSolverJob
 
       cells.each do |cell|
         row, col = cell.values_at('row', 'col')
-        if type == 'note'
-          if notes[row][col].include?(value)
-            notes[row][col].delete(value)
+        if type == 'note' || type == 'corner_mark' # backwards compatibility
+          cell_marks[row][col]['cornerMarks'] ||= []
+          if cell_marks[row][col]['cornerMarks'].include?(value)
+            cell_marks[row][col]['cornerMarks'].delete(value)
           else
-            notes[row][col] << value
+            cell_marks[row][col]['cornerMarks'] << value
+          end
+        elsif type == 'center_mark'
+          cell_marks[row][col]['centerMarks'] ||= []
+          if cell_marks[row][col]['centerMarks'].include?(value)
+            cell_marks[row][col]['centerMarks'].delete(value)
+          else
+            cell_marks[row][col]['centerMarks'] << value
           end
         elsif type == 'delete'
           grid[row][col] = nil
-          notes[row][col] = []
+          cell_marks[row][col] = []
         elsif type == 'digit'
           grid[row][col] = value
         end
