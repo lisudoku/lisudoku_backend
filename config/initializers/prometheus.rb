@@ -10,3 +10,4 @@ $PUZZLE_SOLVED_COUNTER = Prometheus::Client::Counter.new(
   labels: [:variant, :difficulty]
 )
 registry.register($PUZZLE_RANDOM_COUNTER)
+registry.register($PUZZLE_SOLVED_COUNTER)
