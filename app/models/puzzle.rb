@@ -27,7 +27,8 @@ class Puzzle < ApplicationRecord
   validate :check_solution
 
   enum variant: %w[
-    arrow antiknight antiking classic diagonal extraregions irregular killer kropki mixed oddeven thermo topbot
+    arrow antiknight antiking classic diagonal extraregions irregular killer
+    kropki mixed oddeven thermo topbot noncons renban palindrome
   ].index_by(&:itself)
   enum difficulty: %w[
     easy4x4 easy6x6 hard6x6 easy9x9 medium9x9 hard9x9
