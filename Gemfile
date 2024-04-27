@@ -59,3 +59,4 @@ gem 'sidekiq', '~> 7.0.2'
 gem 'sidekiq-cron', '~> 1.9.1'
 
 gem 'newrelic_rpm'
+gem 'prometheus-client'

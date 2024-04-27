@@ -6,6 +6,12 @@ class Api::PuzzlesController < ApplicationController
   def random
     authorize! :read, Puzzle
 
+    $PUZZLE_RANDOM_COUNTER.increment(labels: {
+      variant: params[:variant],
+      difficulty: params[:difficulty],
+    })
+    logger.info "User requested random puzzle (#{params[:variant]},#{params[:difficulty]})"
+
     all_puzzle_ids = Puzzle.all_ids(puzzle_filters)
     puzzle_ids_blacklist = params.fetch(:id_blacklist, [])
 
@@ -61,10 +67,15 @@ class Api::PuzzlesController < ApplicationController
     stats = nil
 
     if correct
+      $PUZZLE_SOLVED_COUNTER.increment(labels: {
+        variant: @puzzle.variant,
+        difficulty: @puzzle.difficulty,
+      })
       Honeybadger.notify(
         "Someone solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})",
         error_class: 'Solved puzzle'
       )
+      logger.info "User solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})"
 
       actions = params.permit(actions: [:type, :value, :time, cells: [:row, :col]]).to_h[:actions]
       solve_time = actions.last['time']

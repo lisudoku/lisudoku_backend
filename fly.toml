@@ -27,6 +27,10 @@ kill_timeout = "5s"
   web = "bin/rails fly:server"
   worker = "bundle exec sidekiq"
 
+[metrics]
+  port = 8080
+  path = "/metrics" # default for most prometheus exporters
+
 [[services]]
   protocol = "tcp"
   internal_port = 8080
