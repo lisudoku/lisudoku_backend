@@ -103,6 +103,12 @@ class Api::PuzzlesController < ApplicationController
       end
 
       @puzzle.user_solutions.create!(steps: actions, solve_time: solve_time)
+    else
+      # This point should not be reached because we check if the solution is correct locally
+      Honeybadger.notify(
+        "Incorrect puzzle! #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty}) #{params[:grid]}",
+        error_class: 'Incorrect puzzle'
+      )
     end
 
     render json: {
