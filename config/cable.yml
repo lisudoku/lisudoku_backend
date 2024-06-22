@@ -1,6 +1,8 @@
 development:
   adapter: redis
   url: <%= ENV.fetch("TV_REDIS_URL") { "redis://localhost:6379/1" } %>
+  reconnect_attempts: 1000
+  reconnect_delay: 1
 
 test:
   adapter: test
@@ -9,3 +11,5 @@ production:
   adapter: redis
   url: <%= ENV.fetch("TV_REDIS_URL") { "redis://localhost:6379/1" } %>
   channel_prefix: lisudoku_backend_production
+  reconnect_attempts: 1000
+  reconnect_delay: 1
