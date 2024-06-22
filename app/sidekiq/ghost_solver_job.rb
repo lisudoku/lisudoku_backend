@@ -19,7 +19,7 @@ class GhostSolverJob
 
     return 1000 if user_solution.blank?
 
-    puts "Playing user solution #{user_solution.id} to TV"
+    logger.info "Playing user solution #{user_solution.id} to TV"
 
     id = "ghost_#{user_solution.puzzle_id}_#{SecureRandom.urlsafe_base64(2)}"
     solved = false
