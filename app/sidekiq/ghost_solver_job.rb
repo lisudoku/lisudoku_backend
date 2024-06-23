@@ -72,7 +72,7 @@ class GhostSolverJob
           end
         elsif type == 'delete'
           grid[row][col] = nil
-          cell_marks[row][col] = []
+          cell_marks[row][col] = {}
         elsif type == 'digit'
           grid[row][col] = value
         end
