@@ -25,10 +25,16 @@ class Api::PuzzlesController < ApplicationController
     puzzle_ids = all_puzzle_ids - puzzle_ids_blacklist
 
     if puzzle_ids.blank?
-      Honeybadger.notify(
-        "No puzzle ids found for category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]}",
-        error_class: 'Puzzle fetch error'
-      )
+      unless current_user&.admin? ||
+            (
+              puzzle_filters[:variant] == Puzzle.variants[:antiking] &&
+              puzzle_filters[:difficulty] == Puzzle.difficulties[:easy4x4]
+            )
+        Honeybadger.notify(
+          "No puzzle ids found for category #{puzzle_filters[:variant]} #{puzzle_filters[:difficulty]}",
+          error_class: 'Puzzle fetch error'
+        )
+      end
     end
 
     puzzle = if puzzle_ids.present?
