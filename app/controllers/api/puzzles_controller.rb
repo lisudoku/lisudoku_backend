@@ -60,6 +60,7 @@ class Api::PuzzlesController < ApplicationController
 
     correct = @puzzle.solution == params[:grid]
     stats = nil
+    user_solution = nil
 
     if correct
       $PUZZLE_SOLVED_COUNTER.increment(labels: {
@@ -97,7 +98,7 @@ class Api::PuzzlesController < ApplicationController
         stats[:median] = solve_time
       end
 
-      @puzzle.user_solutions.create!(steps: actions, solve_time: solve_time)
+      user_solution = @puzzle.user_solutions.create!(steps: actions, solve_time: solve_time)
     else
       # This point should not be reached because we check if the solution is correct locally
       Honeybadger.notify(
@@ -109,6 +110,7 @@ class Api::PuzzlesController < ApplicationController
     render json: {
       correct: correct,
       stats: stats,
+      user_solution: user_solution.present? ? UserSolutionSerializer.new(user_solution).as_json : nil,
     }
   end
 

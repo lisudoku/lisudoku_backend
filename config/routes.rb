@@ -42,5 +42,6 @@ Rails.application.routes.draw do
       end
     end
     resources :competitions, only: %i[index create show destroy update]
+    resources :user_solutions, only: %i[index show]
   end
 end
