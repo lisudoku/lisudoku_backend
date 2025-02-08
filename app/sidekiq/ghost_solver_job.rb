@@ -56,7 +56,7 @@ class GhostSolverJob
 
       cells.each do |cell|
         row, col = cell.values_at('row', 'col')
-        if type == 'note' || type == 'corner_mark' # backwards compatibility
+        if type == 'corner_mark'
           cell_marks[row][col]['cornerMarks'] ||= []
           if cell_marks[row][col]['cornerMarks'].include?(value)
             cell_marks[row][col]['cornerMarks'].delete(value)
