@@ -105,9 +105,10 @@ class TvChannel < ApplicationCable::Channel
     }
 
     if redis_puzzle.present?
-      if tv_puzzle[:update_count] == 1
-        Honeybadger.notify('Someone is playing!', error_class: 'Player active')
-      end
+      # Note: this alert is not as useful anymore
+      # if tv_puzzle[:update_count] == 1
+      #   Honeybadger.notify('Someone is playing!', error_class: 'Player active')
+      # end
     else
       puzzle = Puzzle.find_by(public_id: puzzle_id)
       tv_puzzle.merge!({

@@ -17,7 +17,7 @@ class Api::PuzzlesController < ApplicationController
 
     if !current_user&.admin? &&
        puzzle_ids_blacklist.size > 0 &&
-       (puzzle_ids_blacklist.size < 5 || puzzle_ids_blacklist.size % 5 == 0)
+       (puzzle_ids_blacklist.size == 5 || puzzle_ids_blacklist.size % 10 == 0)
       Honeybadger.notify(
         "User has #{puzzle_ids_blacklist.size} solved puzzles",
         error_class: 'User solve count'
