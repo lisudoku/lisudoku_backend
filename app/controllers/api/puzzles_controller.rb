@@ -68,10 +68,11 @@ class Api::PuzzlesController < ApplicationController
         variant: @puzzle.variant,
         difficulty: @puzzle.difficulty,
       })
-      Honeybadger.notify(
-        "Someone solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})",
-        error_class: 'Solved puzzle'
-      )
+      # Note: Removed to reduce load on Honeybadger alerts
+      # Honeybadger.notify(
+      #   "Someone solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})",
+      #   error_class: 'Solved puzzle'
+      # )
       logger.info "User solved puzzle #{@puzzle.public_id} (#{@puzzle.variant}, #{@puzzle.difficulty})"
 
       actions = params.permit(actions: [:type, :value, :time, cells: [:row, :col]]).to_h[:actions]
