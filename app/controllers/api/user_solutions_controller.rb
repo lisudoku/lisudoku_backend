@@ -5,7 +5,7 @@ class Api::UserSolutionsController < ApplicationController
   def index
     authorize! :read, UserSolution
 
-    user_solutions = UserSolution.includes(:puzzle).order(id: :desc).to_a
+    user_solutions = UserSolution.includes(:puzzle).order(id: :desc).limit(150).to_a
     serialized_user_solutions = user_solutions.map do |user_solution|
       UserSolutionSerializer.new(user_solution).as_json
     end
