@@ -148,7 +148,13 @@ class Api::PuzzlesController < ApplicationController
 
     solved_puzzle_ids = UserSolution.cached_puzzle_ids.to_set
     serialized_puzzles = puzzles.map do |puzzle|
-      PuzzleSerializer.new(puzzle, { solved_puzzle_ids: solved_puzzle_ids }).as_json
+      PuzzleSerializer.new(
+        puzzle,
+        {
+          solved_puzzle_ids: solved_puzzle_ids,
+          include_source_collection: params[:id].present?,
+        }
+      ).as_json
     end
 
     render json: {
