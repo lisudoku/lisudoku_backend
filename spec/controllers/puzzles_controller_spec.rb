@@ -51,7 +51,7 @@ describe 'Puzzles', type: :request do
       puzzle
       expect(Puzzle.count).to eq 1
 
-      get_api '/api/puzzles', admin_user
+      get_api "/api/puzzles?variant=#{puzzle.variant}", admin_user
 
       expect(response).to have_http_status(200)
       body = JSON.parse(response.body)
