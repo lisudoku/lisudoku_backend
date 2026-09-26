@@ -137,9 +137,16 @@ class Api::PuzzlesController < ApplicationController
     puzzles = Puzzle.order(:id)
     if params[:id].present?
       puzzles = puzzles.where(id: params[:id])
+    elsif params[:variant].present?
+      puzzles = puzzles.where(variant: params[:variant])
+    else
+      render json: {
+        errors: "id or variant parameters required",
+      }, status: :bad_request
+      return
     end
 
-    solved_puzzle_ids = UserSolution.cached_puzzle_ids
+    solved_puzzle_ids = UserSolution.cached_puzzle_ids.to_set
     serialized_puzzles = puzzles.map do |puzzle|
       PuzzleSerializer.new(puzzle, { solved_puzzle_ids: solved_puzzle_ids }).as_json
     end
