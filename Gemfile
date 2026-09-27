@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.4.11'
 
-gem 'rails', '~> 7.1.0'
+gem 'rails', '~> 7.2.0'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -25,18 +25,15 @@ gem 'connection_pool'
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', require: false
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem 'bootsnap', '~> 1.26', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
 group :development, :test do
-  gem 'debug'
-  gem 'rspec-rails'
-  gem 'factory_bot_rails'
+  gem 'debug', '~> 1.9'
+  gem 'rspec-rails', '~> 8.0.4'
+  gem 'factory_bot_rails', '~> 6.5.1'
 end
 
 group :development do
@@ -47,8 +44,9 @@ end
 # TODO: check out jbuilder, may be better
 gem 'active_model_serializers', '~> 0.10.0'
 
-gem 'devise'
-gem 'devise-jwt'
+gem 'devise', '~> 5.0.4'
+gem 'devise-jwt', '~> 0.13.0'
+
 gem 'cancancan'
 
 gem 'honeybadger', '~> 6.9.2'
@@ -60,14 +58,7 @@ gem 'sidekiq-cron', '~> 2.4.0'
 gem 'newrelic_rpm', '~> 10.8'
 gem 'prometheus-client'
 
-# # Remove after upgrading to Rails 7.1+
-# gem "mutex_m"
-# gem "logger"
-# gem "benchmark"
-# gem "fiddle"
-gem "observer"
-# gem "base64"
-# gem "bigdecimal"
-
 # Remove after upgrading to Rails 8.1+
+gem "mutex_m"
+gem "observer"
 gem "json", "~> 2.7"
