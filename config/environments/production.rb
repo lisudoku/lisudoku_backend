@@ -63,8 +63,8 @@ Rails.application.configure do
   # Use a different cache store in production.
   config.cache_store = :redis_cache_store, {
     url: ENV.fetch('REDIS_URL') { 'redis://localhost:6379/1' },
-    pool_size: 5,
-    pool_timeout: 5,
+    # Change to "true" after upgrading to Rails 8.1+
+    pool: false
   }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

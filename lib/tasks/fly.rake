@@ -31,7 +31,7 @@ namespace :fly do
     sh 'fallocate -l 512M /swapfile'
     sh 'chmod 0600 /swapfile'
     sh 'mkswap /swapfile'
-    sh 'echo 10 > /proc/sys/vm/swappiness'
-    sh 'swapon /swapfile'
+    sh 'echo 10 > /proc/sys/vm/swappiness || true'
+    sh 'swapon /swapfile || true'
   end
 end
